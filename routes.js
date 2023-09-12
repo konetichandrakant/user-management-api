@@ -34,8 +34,8 @@ router.post('/', (req, res) => {
   pool.query(query, [username, hashedPassword, email, email], (queryErr, results) => {
     if (queryErr)
       return res.status(500).send('error while creating, pass all required fields i.e. username,password,email with case sentitive in body of request');
-
-    if (results.changedRows === 0)
+    
+    if (results.affectedRows === 0)
       return res.status(500).send('error while creating, email already exists');
 
     return res.status(200).send('created successfully');
