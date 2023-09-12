@@ -21,6 +21,9 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
   const { username, password, email } = req.body;
 
+  if (!username || !password || !email)
+    return res.status(400).send('validation error send username,password,email in correct format');
+
   if (!validateUsername(username) || !validatePassword(password) || !validateEmail(email))
     return res.status(400).send('validation error send username,password,email in correct format');
 
@@ -34,7 +37,7 @@ router.post('/', (req, res) => {
   pool.query(query, [username, hashedPassword, email, email], (queryErr, results) => {
     if (queryErr)
       return res.status(500).send('error while creating, pass all required fields i.e. username,password,email with case sentitive in body of request');
-    
+
     if (results.affectedRows === 0)
       return res.status(500).send('error while creating, email already exists');
 
@@ -62,6 +65,9 @@ router.put('/:id', (req, res) => {
   const { id } = req.params;
 
   const { username, password, email } = req.body;
+
+  if (!username || !password || !email)
+    return res.status(400).send('validation error send username,password,email in correct format');
 
   if (!validateUsername(username) || !validatePassword(password) || !validateEmail(email))
     return res.status(400).send('validation error send username,password,email in correct format');
@@ -91,7 +97,7 @@ router.delete('/:id', (req, res) => {
     if (err)
       return res.status(500);
 
-    if (results.changedRows === 0)
+    if (results.affectedRows === 0)
       return res.status(500).send('cant delete as there is no user with mentioned ID');
 
     return res.status(200).send('deleted succcessfully');
